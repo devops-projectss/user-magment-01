@@ -1,55 +1,131 @@
-const db = require('../models/db');
+const { sql, poolPromise } = require('../models/db');
 const bcrypt = require('bcryptjs');
 
 // GET all users
-exports.getAllUsers = (req, res) => {
-  db.query('SELECT id, name, email FROM users', (err, results) => {
-    if (err) return res.status(500).json({ error: err });
-    res.json(results);
-  });
+exports.getAllUsers = async (req, res) => {
+  try {
+    const pool = await poolPromise;
+    const result = await pool.request()
+      .query('SELECT id, name, email, role FROM users');
+    
+    res.json(result.recordset);
+  } catch (err) {
+    console.error('Get All Users Error:', err);
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
 };
 
 // CREATE new user
 exports.addUser = async (req, res) => {
-  const { name, email, password } = req.body;
-
+  const { name, email, password, role } = req.body;
+  
   if (!name || !email || !password) {
     return res.status(400).json({ error: 'Name, email, and password are required' });
   }
-
+  
   try {
+    const pool = await poolPromise;
     const hashedPassword = await bcrypt.hash(password, 10);
-    db.query(
-      'INSERT INTO users (name, email, password) VALUES (?, ?, ?)',
-      [name, email, hashedPassword],
-      (err, result) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.status(201).json({ id: result.insertId, name, email });
-      }
-    );
-  } catch (error) {
-    res.status(500).json({ error: 'Server error while hashing password' });
+    
+    const result = await pool.request()
+      .input('name', sql.NVarChar, name)
+      .input('email', sql.NVarChar, email)
+      .input('password', sql.NVarChar, hashedPassword)
+      .input('role', sql.NVarChar, role || 'viewer')
+      .query('INSERT INTO users (name, email, password, role) VALUES (@name, @email, @password, @role); SELECT SCOPE_IDENTITY() as id;');
+    
+    const insertId = result.recordset[0].id;
+    res.status(201).json({ 
+      id: insertId, 
+      name, 
+      email,
+      role: role || 'viewer'
+    });
+  } catch (err) {
+    console.error('Add User Error:', err);
+    
+    // Handle duplicate email error
+    if (err.number === 2627) {
+      return res.status(409).json({ error: 'Email already exists' });
+    }
+    
+    res.status(500).json({ error: 'Failed to create user' });
   }
 };
 
 // UPDATE user
-exports.updateUser = (req, res) => {
-  const { name, email } = req.body;
-  db.query(
-    'UPDATE users SET name = ?, email = ? WHERE id = ?',
-    [name, email, req.params.id],
-    (err) => {
-      if (err) return res.status(500).json({ error: err });
-      res.json({ id: req.params.id, name, email });
+exports.updateUser = async (req, res) => {
+  const { name, email, role } = req.body;
+  const userId = req.params.id;
+  
+  if (!name || !email) {
+    return res.status(400).json({ error: 'Name and email are required' });
+  }
+  
+  try {
+    const pool = await poolPromise;
+    
+    // Check if user exists first
+    const checkResult = await pool.request()
+      .input('checkId', sql.Int, userId)
+      .query('SELECT id FROM users WHERE id = @checkId');
+    
+    if (checkResult.recordset.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
     }
-  );
+    
+    // Update user
+    await pool.request()
+      .input('name', sql.NVarChar, name)
+      .input('email', sql.NVarChar, email)
+      .input('role', sql.NVarChar, role)
+      .input('id', sql.Int, userId)
+      .query('UPDATE users SET name = @name, email = @email' + 
+             (role ? ', role = @role' : '') + 
+             ' WHERE id = @id');
+    
+    res.json({ 
+      id: parseInt(userId), 
+      name, 
+      email,
+      ...(role && { role })
+    });
+  } catch (err) {
+    console.error('Update User Error:', err);
+    
+    // Handle duplicate email error
+    if (err.number === 2627) {
+      return res.status(409).json({ error: 'Email already exists' });
+    }
+    
+    res.status(500).json({ error: 'Failed to update user' });
+  }
 };
 
 // DELETE user
-exports.deleteUser = (req, res) => {
-  db.query('DELETE FROM users WHERE id = ?', [req.params.id], (err) => {
-    if (err) return res.status(500).json({ error: err });
-    res.json({ message: 'User deleted' });
-  });
+exports.deleteUser = async (req, res) => {
+  const userId = req.params.id;
+  
+  try {
+    const pool = await poolPromise;
+    
+    // Check if user exists first
+    const checkResult = await pool.request()
+      .input('checkId', sql.Int, userId)
+      .query('SELECT id FROM users WHERE id = @checkId');
+    
+    if (checkResult.recordset.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    // Delete user
+    await pool.request()
+      .input('id', sql.Int, userId)
+      .query('DELETE FROM users WHERE id = @id');
+    
+    res.json({ message: 'User deleted successfully' });
+  } catch (err) {
+    console.error('Delete User Error:', err);
+    res.status(500).json({ error: 'Failed to delete user' });
+  }
 };
-
