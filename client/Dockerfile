@@ -1,7 +1,10 @@
-FROM node:18
+FROM node:18 AS builder
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install
 COPY . /app/
+FROM node:18-slim As runner
+WORKDIR /app
+COPY --from=builder /app /app
 EXPOSE 3000
-CMD ["npm", "start"]
+CMD ["node", "app.js"]
