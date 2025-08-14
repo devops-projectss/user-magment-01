@@ -44,6 +44,13 @@ steps:
       cliProjectName: 'API Service'           # Friendly name
       extraProperties: |
         sonar.sources=api
-        sonar.language=js
+        sonar.inclusions=**/*.js
+  - task: SonarCloudAnalyze@3
+    inputs:
+      jdkversion: 'JAVA_HOME'
+  - task: SonarCloudPublish@3
+    inputs:
+      pollingTimeoutSec: '300'
+      
    
   
