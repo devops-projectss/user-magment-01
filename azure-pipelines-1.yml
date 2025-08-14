@@ -32,7 +32,7 @@ steps:
 
   - task: SonarCloudPrepare@1
     inputs:
-      SonarCloud: 'SonarCloud-ServiceConnection'
+      SonarCloud: 'SonarCloud'
       organization: $(sonar_org)
       scannerMode: 'CLI'
       configMode: 'manual'
