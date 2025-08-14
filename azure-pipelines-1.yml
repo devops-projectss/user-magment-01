@@ -40,3 +40,6 @@ steps:
       organization: 'user-managment'
       scannerMode: 'cli'
       configMode: 'file'
+      extraProperties: |
+       sonar.sources=api     
+  
