@@ -45,6 +45,7 @@ steps:
       extraProperties: |
         sonar.sources=api
         sonar.inclusions=**/*.js
+        sonar.branch.name=$(Build.SourceBranchName)
   - task: SonarCloudAnalyze@3
     inputs:
       jdkversion: 'JAVA_HOME'
