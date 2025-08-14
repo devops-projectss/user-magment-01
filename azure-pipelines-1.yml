@@ -49,8 +49,6 @@ steps:
     inputs:
       jdkversion: 'JAVA_HOME'
   - task: SonarCloudPublish@3
-    inputs:
-      pollingTimeoutSec: '300'
       
    
   
