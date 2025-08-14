@@ -39,7 +39,8 @@ steps:
       SonarQube: 'SonarCloud'
       organization: 'user-managment'
       scannerMode: 'cli'
-      configMode: 'file'
+      configMode: 'manual'
       extraProperties: |
-        sonar.sources=api     
+        sonar.sources=api
+   
   
