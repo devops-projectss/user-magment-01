@@ -29,35 +29,4 @@ steps:
       cd api
       npm test
     displayName: 'Run tests'
-
-  - task: SonarCloudPrepare@1
-    inputs:
-      SonarCloud: 'SonarCloud'
-      organization: $(sonar_org)
-      scannerMode: 'CLI'
-      configMode: 'manual'
-      cliProjectKey: $(sonar_project_key)
-      cliProjectName: 'API Service'
-      extraProperties: |
-        sonar.sources=.
-        sonar.tests=.
-        sonar.test.inclusions=**/*.test.js
-        sonar.javascript.lcov.reportPaths=coverage/lcov.info
-    displayName: 'Prepare Sonar analysis'
-
-  - script: |
-      cd api
-      npm run build
-    displayName: 'Build backend'
-
-  - task: SonarCloudAnalyze@1
-    displayName: 'Run Sonar analysis'
-
-  - task: SonarCloudPublish@1
-    displayName: 'Publish Sonar results'
-
-  - task: PublishBuildArtifacts@1
-    inputs:
-      PathtoPublish: 'api/dist'
-      ArtifactName: 'api-build'
-    displayName: 'Publish API build artifact'
+    
