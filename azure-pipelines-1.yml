@@ -41,5 +41,5 @@ steps:
       scannerMode: 'cli'
       configMode: 'file'
       extraProperties: |
-       sonar.sources=api     
+        sonar.sources=api     
   
