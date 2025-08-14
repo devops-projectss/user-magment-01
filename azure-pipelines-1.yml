@@ -7,9 +7,9 @@ pool:
   vmImage: ubuntu-latest
 variables:
   node_version: 20.x
-  sonar_project_key: user-managment_user-managment-fe
-  sonar_org: user-managment
-  sonar_token: 1282df0f8e319fc9cfd505e03f75fe116d0b9373
+  sonar_project_key: "user-managment_user-managment-fe"
+  sonar_org: "user-managment"
+  sonar_token: "1282df0f8e319fc9cfd505e03f75fe116d0b9373"
 steps:
   - task: NodeTool@0
     inputs:
