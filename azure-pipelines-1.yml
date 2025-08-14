@@ -46,6 +46,7 @@ steps:
       cliProjectName: 'user-managment-fe'           # Friendly name
       extraProperties: |
         sonar.sources=api
+        sonar.login=$(sonar_token)
         sonar.inclusions=**/*.js
         sonar.branch.name=$(Build.SourceBranchName)
   - task: SonarCloudAnalyze@3
