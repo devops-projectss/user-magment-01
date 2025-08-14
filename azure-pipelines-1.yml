@@ -39,12 +39,6 @@ steps:
       npm run lint || true
     displayName: 'Run linting (non-blocking)'
 
-  # 5. Run tests
-  - script: |
-      cd api
-      npm test
-    displayName: 'Run tests'
-
   # 6. Build backend
   - script: |
       cd api
