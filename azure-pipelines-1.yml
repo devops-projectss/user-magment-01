@@ -36,24 +36,13 @@ steps:
       cd api
       npm run lint || true
     displayName: Run linting (non-blocking)
-  - task: SonarCloudPrepare@3
+  - task: Docker@2
     inputs:
-      SonarQube: 'demo-srv'
-      organization: 'user-managment'
-      scannerMode: 'cli'
-      configMode: 'manual'
-      cliProjectKey: 'user-managment_user-managment-fe'
-      cliProjectName: 'user-managment-fe'
-      cliSources: '.'
-      extraProperties: |
-        sonar.sources=api
-        sonar.token=$(sonar_token)
-        sonar.inclusions=**/*.js
-        sonar.branch.name=$(Build.SourceBranchName)
-  - task: SonarCloudAnalyze@3
-    inputs:
-      jdkversion: 'JAVA_HOME'
-  - task: SonarCloudPublish@3
+      containerRegistry: 'docker-hub'
+      repository: 'kanreddy/user-managment-app'
+      command: 'build'
+      Dockerfile: 'client/Dockerfile'
+      tags: 'fe'
       
    
   
