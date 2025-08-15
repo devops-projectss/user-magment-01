@@ -7,9 +7,9 @@ pool:
   vmImage: ubuntu-latest
 variables:
   node_version: 20.x
-  sonar_project_key: "user-managment_user-managment-fe"
-  sonar_org: "user-managment"
-  sonar_token: "a453abcbba74e1a12b5930bd8c2a8081869fb499"
+  sonar_project_key: user-managment_user-managment-fe
+  sonar_org: user-managment
+  sonar_token: a453abcbba74e1a12b5930bd8c2a8081869fb499
 steps:
   - checkout: self
     fetchDepth: 0
@@ -38,23 +38,12 @@ steps:
     displayName: Run linting (non-blocking)
   - task: Docker@2
     inputs:
-      containerRegistry: 'docker-hub'
-      repository: 'kanreddy/user-managment-app'
-      command: 'build'
-      Dockerfile: 'client/Dockerfile'
-      tags: 'fe-1.0.0-$(Build.SourceVersion)'
+      containerRegistry: docker-hub
+      command: login
   - task: Docker@2
     inputs:
-      containerRegistry: 'docker-hub'
-      command: 'login'
-  - task: Docker@2
-    inputs:
-      containerRegistry: 'docker-hub'
-      repository: 'kanreddy/user-managment-app'
-      command: 'push'
-      tags: 'kanreddy/user-managment-app'
-  
-  
-      
-   
-  
+      containerRegistry: docker-hub
+      repository: kanreddy/user-managment-app
+      command: buildAndPush
+      Dockerfile: client/Dockerfile
+      tags: fe-1.0.0-$(Build.SourceVersion)
