@@ -38,11 +38,13 @@ steps:
     displayName: Run linting (non-blocking)
   - task: SonarCloudPrepare@3
     inputs:
+      SonarQube: 'demo-srv'
       organization: 'user-managment'
       scannerMode: 'cli'
       configMode: 'manual'
-      cliProjectKey: 'user-managment_user-managment-fe'  # MUST provide your project key
-      cliProjectName: 'user-managment-fe'           # Friendly name
+      cliProjectKey: 'user-managment_user-managment-fe'
+      cliProjectName: 'user-managment-fe'
+      cliSources: '.'
       extraProperties: |
         sonar.sources=api
         sonar.login=$(sonar_token)
