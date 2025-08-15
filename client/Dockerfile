@@ -7,4 +7,4 @@ FROM node:18-slim As runner
 WORKDIR /app
 COPY --from=builder /app /app
 EXPOSE 3000
-CMD ["node", "app.js"]
+CMD ["npm", "start"]
