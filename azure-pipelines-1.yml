@@ -42,7 +42,19 @@ steps:
       repository: 'kanreddy/user-managment-app'
       command: 'build'
       Dockerfile: 'client/Dockerfile'
-      tags: 'fe'
+      tags: 'fe-1.0.0-$(Build.SourceVersion)'
+  - task: Docker@2
+    inputs:
+      containerRegistry: 'docker-hub'
+      command: 'login'
+  - task: Docker@2
+    inputs:
+      containerRegistry: 'docker-hub'
+      repository: 'kanreddy/user-managment-app'
+      command: 'push'
+      tags: 'kanreddy/user-managment-app'
+  
+  
       
    
   
