@@ -64,8 +64,8 @@ steps:
     inputs:
       targetType: 'inline'
       script: |
-        snyk test --docker fe-1.0.0-$(Build.SourceVersion) --severity-threshold=high --org=$SNYK_ORG
-        snyk monitor --docker fe-1.0.0-$(Build.SourceVersion)
+        snyk test --docker kanreddy/user-managment-app/fe-1.0.0-$(Build.SourceVersion) --severity-threshold=high --org=$SNYK_ORG
+        snyk monitor --docker kanreddy/user-managment-app/fe-1.0.0-$(Build.SourceVersion)
   - task: Docker@2
     condition: succeeded()
     displayName: Docker Image Push
