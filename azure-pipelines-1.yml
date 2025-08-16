@@ -59,8 +59,8 @@ steps:
       Dockerfile: 'client/Dockerfile'
       buildContext: 'client/'
       tags: |
-        'fe-1.0.0-$(Build.SourceVersion)'
-        'latest'
+        fe-1.0.0-$(Build.SourceVersion)
+        latest
       arguments: '--cache-from kanreddy/user-managment-app:latest'
       
   - task: Bash@3
