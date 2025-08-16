@@ -11,6 +11,7 @@ variables:
   sonar_org: user-managment
   sonar_token: a453abcbba74e1a12b5930bd8c2a8081869fb499
   SNYK_TOKEN: 32755ccb-60bf-4bb9-93c0-8c51fc2acd10
+  SNYK_ORG: 0f0b457c-8795-47d9-a759-e2acd4723d21
 steps:
   - checkout: self
     fetchDepth: 0
@@ -63,7 +64,7 @@ steps:
     inputs:
       targetType: 'inline'
       script: |
-        snyk test --docker fe-1.0.0-$(Build.SourceVersion) --severity-threshold=high
+        snyk test --docker fe-1.0.0-$(Build.SourceVersion) --severity-threshold=high --org=$SNYK_ORG
         snyk monitor --docker fe-1.0.0-$(Build.SourceVersion)
   - task: Docker@2
     condition: succeeded()
