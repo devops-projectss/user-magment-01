@@ -59,14 +59,6 @@ steps:
       script: |
         npm install -g snyk
         snyk auth $SNYK_TOKEN
-  - task: Bash@3
-    displayName: Snyk Monitor
-    inputs:
-      targetType: 'inline'
-      script: |
-        docker login -u kanreddy -p Docker@9133
-        snyk test --docker kanreddy/user-managment-app/fe-1.0.0-$(Build.SourceVersion) --file=client/Dockerfile --severity-threshold=high --org=$SNYK_ORG
-        snyk monitor --docker kanreddy/user-managment-app/fe-1.0.0-$(Build.SourceVersion)
   - task: Docker@2
     displayName: Docker Image Push
     inputs:
@@ -75,4 +67,13 @@ steps:
       command: buildAndPush
       Dockerfile: client/Dockerfile
       tags: fe-1.0.0-$(Build.SourceVersion)
+  - task: Bash@3
+    displayName: Snyk Monitor
+    inputs:
+      targetType: 'inline'
+      script: |
+        docker login -u kanreddy -p Docker@9133
+        snyk test --docker kanreddy/user-managment-app/fe-1.0.0-$(Build.SourceVersion) --file=client/Dockerfile --severity-threshold=high --org=$SNYK_ORG
+        snyk monitor --docker kanreddy/user-managment-app/fe-1.0.0-$(Build.SourceVersion)
+
 
