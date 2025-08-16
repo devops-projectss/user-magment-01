@@ -10,6 +10,7 @@ variables:
   sonar_project_key: user-managment_user-managment-fe
   sonar_org: user-managment
   sonar_token: a453abcbba74e1a12b5930bd8c2a8081869fb499
+  SNYK_TOKEN: 32755ccb-60bf-4bb9-93c0-8c51fc2acd10
 steps:
   - checkout: self
     fetchDepth: 0
@@ -40,6 +41,20 @@ steps:
     inputs:
       containerRegistry: docker-hub
       command: login
+  - task: Docker@2
+    inputs:
+      containerRegistry: 'docker-hub'
+      repository: 'kanreddy/user-managment-app'
+      command: 'build'
+      Dockerfile: 'client/Dockerfile'
+      buildContext: 'client/'
+      tags: 'fe-1.0.0-$(Build.SourceVersion)'
+  - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: |
+        npm install -g snyk
+        snyk auth $SNYK_TOKEN
   - task: Docker@2
     inputs:
       containerRegistry: docker-hub
