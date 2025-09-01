@@ -8,12 +8,7 @@ pool:
   demands:
     - agent.name -equals caching-pool
 variables:
-  node_version: 20.x
-  sonar_project_key: user-managment_user-managment-fe
-  sonar_org: user-managment
-  sonar_token: a453abcbba74e1a12b5930bd8c2a8081869fb499
-  SNYK_TOKEN: 32755ccb-60bf-4bb9-93c0-8c51fc2acd10
-  SNYK_ORG: 0f0b457c-8795-47d9-a759-e2acd4723d21
+  - group: Snyk Variables
 steps:
   - checkout: self
     fetchDepth: 0
