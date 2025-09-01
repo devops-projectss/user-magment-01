@@ -4,9 +4,7 @@ trigger:
     include:
       - master
 pool:
-  name: Default
-  demands:
-    - agent.name -equals caching-pool
+  vmImage: ubuntu-latest
 variables:
   - group: Snyk Variables
 steps:
