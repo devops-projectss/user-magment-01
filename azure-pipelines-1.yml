@@ -64,7 +64,7 @@ steps:
       targetType: 'inline'
       script: |
         npm install -g snyk
-        snyk auth $SNYK_TOKEN
+        snyk auth "$(SNYK_TOKEN)"
   - task: Bash@3
     displayName: Snyk Monitor
     inputs:
