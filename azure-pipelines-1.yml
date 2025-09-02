@@ -81,5 +81,10 @@ steps:
       tags: |
         fe-1.0.0-$(Build.SourceVersion)
         latest
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: '$(Build.SourcesDirectory)/manifests'
+      artifact: 'manifests'
+      publishLocation: 'pipeline'
 
  
