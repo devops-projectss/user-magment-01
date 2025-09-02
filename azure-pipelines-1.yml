@@ -83,7 +83,7 @@ steps:
         latest
   - task: PublishPipelineArtifact@1
     inputs:
-      targetPath: '$(Build.SourcesDirectory)/manifests'
+      targetPath: '$(Build.SourcesDirectory)'
       artifact: 'manifests'
       publishLocation: 'pipeline'
 
